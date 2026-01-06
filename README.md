@@ -53,6 +53,19 @@ npm run dev
 
 4. Abre tu navegador en `http://localhost:5173`
 
+## 🔐 Control de Acceso
+
+Configura variables de entorno en `.env` (usa `.env.example` como base):
+
+```
+VITE_PUBLIC_MODE=false          # Si es true, salta la autenticación
+VITE_ACCESS_CODE=246810         # Código requerido para entrar
+```
+
+Cuando quieras abrir el acceso al público, cambia `VITE_PUBLIC_MODE=true`.
+
+> Seguridad: Este mecanismo es sólo de frontend. Para producción, usa un backend o proveedor de identidad.
+
 ## 📦 Scripts Disponibles
 
 ```bash

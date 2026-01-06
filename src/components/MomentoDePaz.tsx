@@ -18,7 +18,6 @@ interface PeaceMetrics {
 
 export default function MomentoDePaz() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showBreathing, setShowBreathing] = useState(true);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [peaceLevel, setPeaceLevel] = useState(5);
@@ -29,6 +28,17 @@ export default function MomentoDePaz() {
     energyRegenerated: 89,
   });
   const [showLightTrail, setShowLightTrail] = useState(false);
+
+  // Control de acceso mediante variables de entorno
+  const PUBLIC_MODE = import.meta.env.VITE_PUBLIC_MODE === 'true';
+  const ACCESS_CODE = (import.meta.env.VITE_ACCESS_CODE as string) || '';
+
+  // Si está en modo público, autentica automáticamente
+  useEffect(() => {
+    if (PUBLIC_MODE) {
+      setIsAuthenticated(true);
+    }
+  }, [PUBLIC_MODE]);
 
   // Simular actualización de métricas cada 5 minutos
   useEffect(() => {
@@ -55,7 +65,12 @@ export default function MomentoDePaz() {
   };
 
   if (!isAuthenticated) {
-    return <AuthenticationScreen onAuthenticated={() => setIsAuthenticated(true)} />;
+    return (
+      <AuthenticationScreen
+        onAuthenticated={() => setIsAuthenticated(true)}
+        accessCode={ACCESS_CODE}
+      />
+    );
   }
 
   return (
@@ -256,9 +271,16 @@ export default function MomentoDePaz() {
 /**
  * Pantalla de Autenticación
  */
-function AuthenticationScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
+function AuthenticationScreen({
+  onAuthenticated,
+  accessCode,
+}: {
+  onAuthenticated: () => void;
+  accessCode: string;
+}) {
   const [step, setStep] = useState<'facial' | 'code'>('facial');
   const [code, setCode] = useState('');
+  const requiredLen = accessCode?.length || 6;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-blue-600 flex items-center justify-center p-8">
@@ -290,13 +312,17 @@ function AuthenticationScreen({ onAuthenticated }: { onAuthenticated: () => void
               type="text"
               value={code}
               onChange={(e) => setCode(e.target.value.slice(0, 6))}
-              placeholder="000000"
-              maxLength={6}
+              placeholder={"".padStart(requiredLen, '0')}
+              maxLength={requiredLen}
               className="w-full text-center text-3xl font-mono tracking-widest border-2 border-green-300 rounded-lg p-4 mb-6 focus:outline-none focus:border-green-600"
             />
             <Button
-              onClick={onAuthenticated}
-              disabled={code.length !== 6}
+              onClick={() => {
+                if (!accessCode || code === accessCode) {
+                  onAuthenticated();
+                }
+              }}
+              disabled={!!accessCode && code !== accessCode}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors disabled:opacity-50"
             >
               Entrar
