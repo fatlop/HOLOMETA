@@ -147,9 +147,11 @@ Este es un proyecto en desarrollo activo. Las contribuciones son bienvenidas sig
 
 Proyecto del Multiverso Cheperiano - Todos los derechos reservados © 2026
 
-## 👤 Autor
+## 👤 Autoría y Créditos
 
-**fatlop** - [GitHub](https://github.com/fatlop)
+**Fatima López (fatlop)** - [GitHub](https://github.com/fatlop)
+
+Si reutilizas este proyecto, por favor mantén esta atribución.
 
 ---
 
