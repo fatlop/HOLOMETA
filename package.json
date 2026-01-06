@@ -5,6 +5,7 @@
   "type": "module",
   "description": "HoloMeta - Proyecto inmersivo del Multiverso Cheperiano para experiencias interactivas, educativas y emocionales",
   "author": "fatlop",
+  "license": "CC-BY-NC-4.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

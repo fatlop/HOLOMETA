@@ -158,7 +158,14 @@ Este es un proyecto en desarrollo activo. Las contribuciones son bienvenidas sig
 
 ## 📄 Licencia
 
-Proyecto del Multiverso Cheperiano - Todos los derechos reservados © 2026
+Este proyecto está licenciado bajo **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+- Puedes compartir y adaptar el material dando crédito.
+- No está permitido el uso comercial.
+- No añadas restricciones adicionales.
+
+Consulta el texto completo en [LICENSE](LICENSE) o en:
+https://creativecommons.org/licenses/by-nc/4.0/
 
 ## 👤 Autoría y Créditos
 
