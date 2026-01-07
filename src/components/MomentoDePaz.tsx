@@ -163,19 +163,28 @@ export default function MomentoDePaz() {
 
       {/* Modal de Video */}
       <Dialog open={showVideoModal} onOpenChange={setShowVideoModal}>
-        <DialogContent className="max-w-2xl">
-          <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
-            {/* Placeholder para video de YouTube */}
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/ncogj6dHsiY"
-              title="Meditación Ho'oponopono"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="rounded-lg"
-            />
+        <DialogContent className="max-w-md">
+          <div className="flex flex-col items-center gap-6 p-6">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
+              <Heart className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-center bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+              Meditación Ho'oponopono
+            </h3>
+            <p className="text-gray-600 text-center">
+              Esta meditación ancestral hawaiana te guiará hacia la paz interior y el perdón.
+            </p>
+            <a
+              href="https://www.youtube.com/watch?v=ncogj6dHsiY"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 text-center flex items-center justify-center gap-2"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Ver en YouTube
+            </a>
           </div>
         </DialogContent>
       </Dialog>
@@ -278,9 +287,27 @@ function AuthenticationScreen({
   onAuthenticated: () => void;
   accessCode: string;
 }) {
-  const [step, setStep] = useState<'facial' | 'code'>('facial');
+  const [step, setStep] = useState<'facial' | 'credentials'>('facial');
+  const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
+  const [error, setError] = useState('');
   const requiredLen = accessCode?.length || 6;
+
+  const handleLogin = () => {
+    setError('');
+    
+    if (!username.trim()) {
+      setError('Por favor ingresa tu usuario');
+      return;
+    }
+    
+    if (!accessCode || code === accessCode) {
+      onAuthenticated();
+    } else {
+      setError('Código incorrecto. Intenta de nuevo.');
+      setCode('');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-blue-600 flex items-center justify-center p-8">
@@ -297,7 +324,7 @@ function AuthenticationScreen({
               <p className="text-gray-500 text-sm font-light">Cámara lista</p>
             </div>
             <Button
-              onClick={() => setStep('code')}
+              onClick={() => setStep('credentials')}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors"
             >
               Continuar
@@ -306,23 +333,33 @@ function AuthenticationScreen({
         ) : (
           <div>
             <p className="text-gray-700 mb-6 font-light">
-              Ingresa el código de 6 dígitos que recibiste
+              Ingresa tus credenciales
             </p>
+            
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Usuario"
+              className="w-full border-2 border-green-300 rounded-lg p-3 mb-4 focus:outline-none focus:border-green-600"
+            />
+            
             <input
               type="text"
               value={code}
-              onChange={(e) => setCode(e.target.value.slice(0, 6))}
+              onChange={(e) => setCode(e.target.value.slice(0, requiredLen))}
               placeholder={"".padStart(requiredLen, '0')}
               maxLength={requiredLen}
-              className="w-full text-center text-3xl font-mono tracking-widest border-2 border-green-300 rounded-lg p-4 mb-6 focus:outline-none focus:border-green-600"
+              className="w-full text-center text-3xl font-mono tracking-widest border-2 border-green-300 rounded-lg p-4 mb-4 focus:outline-none focus:border-green-600"
             />
+            
+            {error && (
+              <p className="text-red-600 text-sm mb-4 font-light">{error}</p>
+            )}
+            
             <Button
-              onClick={() => {
-                if (!accessCode || code === accessCode) {
-                  onAuthenticated();
-                }
-              }}
-              disabled={!!accessCode && code !== accessCode}
+              onClick={handleLogin}
+              disabled={!username.trim() || (!!accessCode && code !== accessCode)}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors disabled:opacity-50"
             >
               Entrar
