@@ -153,7 +153,26 @@ npm run dev
 3. Vercel detectará automáticamente Vite y hará build
 4. Listo, tu app estará en línea con URL pública
 
+#### Dominios y redirecciones (Vercel)
+
+- Dominio principal: qpandatecnovador.com (laboratorio y apps)
+- Dominio secundario: vibexlegend.com (comunidad)
+
+Incluimos `vercel.json` con una regla que redirige todo el tráfico de `vibexlegend.com` → `https://qpandatecnovador.com` (código 308), preservando las rutas.
+
+Para mantener rutas en el secundario, añade reglas específicas adicionales en Vercel (o crea un proyecto aparte para vibexlegend con su propia configuración).
+
 ### Opción 2: Deploy con Netlify
+
+#### Dominios y redirecciones (Netlify)
+
+Si despliegas el sitio secundario en Netlify, hemos añadido `public/_redirects` con:
+
+```
+/*    https://qpandatecnovador.com/:splat    301!
+```
+
+Esto redirige todo a tu dominio principal. Asegúrate de configurar `qpandatecnovador.com` como dominio primario en Netlify para evitar duplicidades.
 
 1. Ve a [netlify.com](https://netlify.com)
 2. "Add new site" → Import from Git
