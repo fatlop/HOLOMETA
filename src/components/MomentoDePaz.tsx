@@ -293,7 +293,8 @@ function AuthenticationScreen({
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const CODIGO_CORRECTO = accessCode || '246810';
+  // En desarrollo permite código por defecto; en producción exige ACCESS_CODE configurado
+  const CODIGO_CORRECTO = accessCode || (import.meta.env.DEV ? '246810' : '');
 
   // Al cargar, pre-llenar usuario si existe en localStorage
   useEffect(() => {
@@ -306,7 +307,7 @@ function AuthenticationScreen({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (codigo === CODIGO_CORRECTO && usuario.trim() !== '') {
+    if (CODIGO_CORRECTO && codigo === CODIGO_CORRECTO && usuario.trim() !== '') {
       // Guardar usuario
       localStorage.setItem('usuarioHoloMeta', usuario.trim());
       setError(false);
@@ -372,6 +373,7 @@ function AuthenticationScreen({
               }`}
             />
             
+            {/* Código de acceso */}
             <input
               type="text"
               placeholder="Código"
@@ -382,6 +384,11 @@ function AuthenticationScreen({
                 error ? 'border-red-500 bg-red-50' : success ? 'border-green-500 bg-green-50' : 'border-green-300 focus:border-green-600'
               }`}
             />
+            {!CODIGO_CORRECTO && (
+              <p className="text-amber-600 text-sm font-light">
+                Configura VITE_ACCESS_CODE en producción para habilitar el acceso.
+              </p>
+            )}
             
             {error && (
               <p className="text-red-600 text-sm font-light">Código incorrecto. Intenta de nuevo.</p>
@@ -389,7 +396,7 @@ function AuthenticationScreen({
             
             <button
               type="submit"
-              disabled={!usuario.trim() || codigo.length < 6}
+              disabled={!usuario.trim() || codigo.length < 6 || !CODIGO_CORRECTO}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors disabled:opacity-50"
             >
               Entrar

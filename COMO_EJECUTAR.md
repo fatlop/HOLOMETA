@@ -19,7 +19,7 @@ Esto descarga todo lo que React, Vite y TailwindCSS necesitan.
 
 **Requisitos:** Asegúrate de tener Node.js 18 o superior instalado.
 
-### 3️⃣ Configurar Acceso (Opcional)
+### 3️⃣ Configurar Acceso (Protegido)
 
 Por defecto, el proyecto requiere un código de acceso. Para configurarlo:
 
@@ -31,7 +31,14 @@ Edita el archivo `.env` y ajusta:
 - `VITE_ACCESS_CODE=tu_codigo` - Tu código personal de 6 dígitos
 - `VITE_PUBLIC_MODE=false` - Modo cerrado (requiere código)
 
-Para **abrir al público sin código**, cambia a `VITE_PUBLIC_MODE=true`
+Para **abrir al público sin código (solo demos)**, cambia a `VITE_PUBLIC_MODE=true`.
+
+En **producción**, debes configurar las variables en tu plataforma (Vercel/Netlify):
+
+- En Vercel: Project Settings → Environment Variables → añade `VITE_ACCESS_CODE` y deja `VITE_PUBLIC_MODE=false`.
+- En Netlify: Site settings → Environment variables → añade `VITE_ACCESS_CODE` y deja `VITE_PUBLIC_MODE=false`.
+
+Si despliegas sin configurar `VITE_ACCESS_CODE`, la app no permitirá el acceso y mostrará un aviso para que lo configures.
 
 ### 4️⃣ Ejecutar el Proyecto
 
