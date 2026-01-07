@@ -22,6 +22,7 @@ export default function MomentoDePaz() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [peaceLevel, setPeaceLevel] = useState(5);
   const [peaceSentToday, setPeaceSentToday] = useState(0);
+  const [currentUserName, setCurrentUserName] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<PeaceMetrics>({
     peopleInPeace: 247,
     peaceSharesToday: 1234,
@@ -32,11 +33,13 @@ export default function MomentoDePaz() {
   // Control de acceso mediante variables de entorno
   const PUBLIC_MODE = import.meta.env.VITE_PUBLIC_MODE === 'true';
   const ACCESS_CODE = (import.meta.env.VITE_ACCESS_CODE as string) || '';
+  const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:4000';
 
   // Si está en modo público, autentica automáticamente
   useEffect(() => {
     if (PUBLIC_MODE) {
       setIsAuthenticated(true);
+      fetchUserData();
     }
   }, [PUBLIC_MODE]);
 
@@ -52,6 +55,18 @@ export default function MomentoDePaz() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const res = await fetch(`${API_URL}/user`);
+      if (res.ok) {
+        const data = await res.json();
+        setCurrentUserName(data.name);
+      }
+    } catch (e) {
+      console.warn('API no disponible, usando nombre local:', e);
+    }
+  };
 
   const handleSharePeace = () => {
     setShowLightTrail(true);
@@ -69,6 +84,7 @@ export default function MomentoDePaz() {
       <AuthenticationScreen
         onAuthenticated={() => setIsAuthenticated(true)}
         accessCode={ACCESS_CODE}
+        onFetchUserData={fetchUserData}
       />
     );
   }
@@ -98,6 +114,11 @@ export default function MomentoDePaz() {
         <p className="text-lg text-gray-700 font-light text-center">
           Respira. Estás en paz.
         </p>
+        {currentUserName && (
+          <p className="text-sm text-green-600 font-light mt-2">
+            Bienvenido, {currentUserName} ✨
+          </p>
+        )}
       </div>
 
       {/* Zona de Conexión */}
@@ -283,9 +304,11 @@ export default function MomentoDePaz() {
 function AuthenticationScreen({
   onAuthenticated,
   accessCode,
+  onFetchUserData,
 }: {
   onAuthenticated: () => void;
   accessCode: string;
+  onFetchUserData?: () => void;
 }) {
   const [step, setStep] = useState<'facial' | 'credentials'>('facial');
   const [usuario, setUsuario] = useState('');
@@ -313,9 +336,12 @@ function AuthenticationScreen({
       setError(false);
       setSuccess(true);
 
-      // Llamar callback después de animación
+      // Llamar callback y fetch de datos del usuario después de animación
       setTimeout(() => {
         setSuccess(false);
+        if (onFetchUserData) {
+          onFetchUserData();
+        }
         onAuthenticated();
       }, 800);
     } else {
