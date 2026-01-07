@@ -1,58 +1,77 @@
 # Guía de Ejecución - HoloMeta
 
-## 🚀 Cómo Ejecutar el Proyecto
+## 🚀 Cómo Ejecutar el Proyecto Localmente
 
-### Paso 1: Navegar a la Carpeta del Proyecto
+### 1️⃣ Clonar el Repositorio
 
 ```bash
-cd /workspaces/desktop-tutorial/holometa
+git clone https://github.com/fatlop/HOLOMETA.git
+cd HOLOMETA
 ```
 
-### Paso 2: Instalar Dependencias
+### 2️⃣ Instalar Dependencias
 
 ```bash
 npm install
 ```
 
-Esto instalará todas las dependencias necesarias listadas en `package.json`.
+Esto descarga todo lo que React, Vite y TailwindCSS necesitan. 
 
-### Paso 3: Instalar Dependencias Adicionales
+**Requisitos:** Asegúrate de tener Node.js 18 o superior instalado.
 
-Algunas dependencias de Radix UI necesitan instalarse por separado:
+### 3️⃣ Configurar Acceso (Opcional)
+
+Por defecto, el proyecto requiere un código de acceso. Para configurarlo:
 
 ```bash
-npm install @radix-ui/react-dialog @radix-ui/react-slider @radix-ui/react-slot tailwindcss-animate
+cp .env.example .env
 ```
 
-### Paso 4: Iniciar el Servidor de Desarrollo
+Edita el archivo `.env` y ajusta:
+- `VITE_ACCESS_CODE=tu_codigo` - Tu código personal de 6 dígitos
+- `VITE_PUBLIC_MODE=false` - Modo cerrado (requiere código)
+
+Para **abrir al público sin código**, cambia a `VITE_PUBLIC_MODE=true`
+
+### 4️⃣ Ejecutar el Proyecto
 
 ```bash
 npm run dev
 ```
 
-Deberías ver un mensaje como:
+Esto levanta el servidor de desarrollo de Vite. Deberías ver:
 
 ```
   VITE v5.0.8  ready in XXX ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
-  ➜  press h to show help
 ```
 
-### Paso 5: Abrir en el Navegador
+### 5️⃣ Abrir en el Navegador
 
-1. **Opción A**: Haz clic en el enlace que aparece en la terminal (http://localhost:5173/)
+Abre: **http://localhost:5173**
 
-2. **Opción B**: Abre tu navegador manualmente y navega a:
-   ```
-   http://localhost:5173
-   ```
+Debes ver la app de HoloMeta corriendo, lista para interactuar.
 
-3. **Opción C**: Usa el comando de terminal:
-   ```bash
-   "$BROWSER" http://localhost:5173
-   ```
+---
+
+## 💡 Tips y Trucos
+
+### Hot Reload Automático
+Si quieres ver cambios al vuelo, solo edita archivos y Vite recargará automáticamente. No necesitas reiniciar el servidor.
+
+### Cerrar el Servidor
+Para cerrar el servidor, presiona **Ctrl + C** en la terminal.
+
+### Modo Producción Local
+Para ver cómo se verá en producción:
+```bash
+npm run build
+npm run preview
+```
+
+---
 
 ## 📋 Comandos Útiles
 
@@ -74,6 +93,8 @@ npm run preview      # Previsualiza la versión de producción
 ```bash
 npm run lint         # Ejecuta ESLint para verificar el código
 ```
+
+---
 
 ## 🔧 Solución de Problemas
 
@@ -103,58 +124,30 @@ rm -rf node_modules/.vite
 npm run dev
 ```
 
-## 📦 Estructura de Ejecución
+---
 
-```
-1. npm install → Instala dependencias
-2. Vite carga configuración → vite.config.ts
-3. TypeScript compila → tsconfig.json
-4. Tailwind procesa estilos → tailwind.config.js
-5. React renderiza → src/main.tsx → src/App.tsx
-6. Servidor listo → http://localhost:5173
-```
+## 🌐 Desplegar Demo Online (Opcional)
 
-## 🌐 Crear Repositorio en GitHub
+¿Quieres mostrar HoloMeta al mundo? Puedes desplegarlo en **Vercel** con un click:
 
-### Opción 1: Usando GitHub CLI (gh)
+### Opción 1: Deploy con Vercel (Recomendado)
 
-```bash
-# Desde la carpeta holometa
-cd /workspaces/desktop-tutorial/holometa
+1. Ve a [vercel.com](https://vercel.com) y conecta tu cuenta de GitHub
+2. Importa el repo `fatlop/HOLOMETA`
+3. Vercel detectará automáticamente Vite y hará build
+4. Listo, tu app estará en línea con URL pública
 
-# Crear repositorio en GitHub
-gh repo create HoloMeta --public --source=. --remote=origin --push
+### Opción 2: Deploy con Netlify
 
-# O si prefieres privado
-gh repo create HoloMeta --private --source=. --remote=origin --push
-```
+1. Ve a [netlify.com](https://netlify.com)
+2. "Add new site" → Import from Git
+3. Conecta GitHub y selecciona `HOLOMETA`
+4. Build command: `npm run build`
+5. Publish directory: `dist`
 
-### Opción 2: Manualmente
+**Importante:** Si usas control de acceso (`.env`), configura las variables de entorno en la plataforma de deploy.
 
-1. Ve a https://github.com/new
-2. Nombre del repositorio: `HoloMeta`
-3. Descripción: "Proyecto inmersivo del Multiverso Cheperiano"
-4. Elige público o privado
-5. **NO** inicialices con README (ya lo tenemos)
-6. Crea el repositorio
-
-Luego en tu terminal:
-
-```bash
-cd /workspaces/desktop-tutorial/holometa
-git remote add origin https://github.com/fatlop/HoloMeta.git
-git branch -M main
-git push -u origin main
-```
-
-## 🎯 Próximos Pasos
-
-1. ✅ Proyecto creado
-2. ✅ Git inicializado
-3. ⏳ Instalar dependencias
-4. ⏳ Ejecutar proyecto
-5. ⏳ Crear repositorio en GitHub
-6. ⏳ Hacer push a GitHub
+---
 
 ## 💡 Notas Importantes
 
@@ -162,6 +155,7 @@ git push -u origin main
 - **Puerto**: El proyecto usa el puerto 5173 por defecto
 - **Hot Reload**: Los cambios se reflejan automáticamente sin reiniciar
 - **Build**: El proyecto compilado se guarda en la carpeta `dist/`
+- **Licencia**: CC BY-NC 4.0 - Uso no comercial con atribución
 
 ## 📞 ¿Necesitas Ayuda?
 
@@ -169,40 +163,9 @@ Si algo no funciona:
 1. Verifica que Node.js está instalado: `node --version`
 2. Verifica que npm está instalado: `npm --version`
 3. Lee los mensajes de error cuidadosamente
-4. Revisa el archivo README.md para más detalles
+4. Revisa el archivo [README.md](README.md) para más detalles
+5. Abre un issue en: https://github.com/fatlop/HOLOMETA/issues
 
 ---
 
 **¡Listo para comenzar tu viaje en HoloMeta!** 🌱✨
-
----
-
-## 🔐 Control de Acceso (Primero controlar, luego abrir)
-
-Por defecto, el proyecto requiere un código de acceso antes de entrar. Configúralo así:
-
-1) Crea tu archivo `.env` a partir del ejemplo:
-
-```bash
-cd /workspaces/desktop-tutorial/holometa
-cp .env.example .env
-```
-
-2) Edita `.env` y define tu código de acceso:
-
-```
-VITE_PUBLIC_MODE=false
-VITE_ACCESS_CODE=246810   # cámbialo por tu código
-```
-
-3) Ejecuta normalmente (`npm run dev`) y usa ese código en la pantalla de autenticación.
-
-4) Cuando quieras “abrirlo” al público, cambia en `.env`:
-
-```
-VITE_PUBLIC_MODE=true
-```
-
-Esto saltará la autenticación y permitirá el acceso directo.
-
-> Nota importante: Este control es del lado del cliente (frontend). Para seguridad real en producción, usa verificación en un servidor (backend) o un proveedor de autenticación.
