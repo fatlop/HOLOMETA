@@ -162,6 +162,8 @@ Incluimos `vercel.json` con una regla que redirige todo el tráfico de `vibexleg
 
 Para mantener rutas en el secundario, añade reglas específicas adicionales en Vercel (o crea un proyecto aparte para vibexlegend con su propia configuración).
 
+Además, se agregan headers de seguridad (HSTS, nosniff, SAMEORIGIN, Referrer-Policy, Permissions-Policy y `upgrade-insecure-requests`) para forzar HTTPS y mejorar seguridad.
+
 ### Opción 2: Deploy con Netlify
 
 #### Dominios y redirecciones (Netlify)
@@ -173,6 +175,57 @@ Si despliegas el sitio secundario en Netlify, hemos añadido `public/_redirects`
 ```
 
 Esto redirige todo a tu dominio principal. Asegúrate de configurar `qpandatecnovador.com` como dominio primario en Netlify para evitar duplicidades.
+
+También incluimos `public/_headers` con HSTS y headers de seguridad equivalentes.
+
+---
+
+## 🔐 SSL/TLS y CORS (Producción)
+
+### SSL/TLS
+- Vercel y Netlify emiten certificados automáticamente (Let’s Encrypt).
+- Forzamos HTTPS vía HSTS y `upgrade-insecure-requests`.
+
+### CORS (si usas backend compartido)
+Permite solo tus dominios.
+
+Ejemplo Express/Node:
+
+```js
+import express from 'express';
+import cors from 'cors';
+
+const app = express();
+const allowedOrigins = [
+  'https://qpandatecnovador.com',
+  'https://vibexlegend.com'
+];
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
+}));
+```
+
+Ejemplo Nginx:
+
+```nginx
+add_header Access-Control-Allow-Origin "https://qpandatecnovador.com https://vibexlegend.com";
+add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+add_header Access-Control-Allow-Headers "Content-Type, Authorization";
+add_header Access-Control-Allow-Credentials "true";
+```
+
+## ✅ Chequeo automatizado de deploy
+Usa `npm run check:deploy` para validar:
+- Redirecciones de dominio
+- HTTPS forzado
+- CORS del backend (si configuras `CHECK_API_URL`)
 
 1. Ve a [netlify.com](https://netlify.com)
 2. "Add new site" → Import from Git
