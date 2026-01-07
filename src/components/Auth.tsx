@@ -26,6 +26,11 @@ export default function AuthenticationScreen({
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+
+  const MAX_ATTEMPTS = 5;
+  const COOLDOWN_SECONDS = 30;
 
   // En desarrollo permite código por defecto; en producción exige ACCESS_CODE configurado
   const CODIGO_CORRECTO = accessCode || (import.meta.env.DEV ? '246810' : '');
@@ -38,14 +43,38 @@ export default function AuthenticationScreen({
     }
   }, []);
 
+  // Cooldown timer: cada segundo reduce el contador
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return;
+    
+    const timer = setInterval(() => {
+      setCooldownRemaining((prev) => {
+        if (prev <= 1) {
+          setFailedAttempts(0); // Reset intentos después del cooldown
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [cooldownRemaining]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Si está en cooldown, no permitir intento
+    if (cooldownRemaining > 0) {
+      return;
+    }
+    
     if (CODIGO_CORRECTO && codigo === CODIGO_CORRECTO && usuario.trim() !== '') {
-      // Guardar usuario
+      // Login exitoso: guardar usuario y resetear intentos
       localStorage.setItem('usuarioHoloMeta', usuario.trim());
       setError(false);
       setSuccess(true);
+      setFailedAttempts(0);
+      setCooldownRemaining(0);
 
       // Llamar callback y fetch de datos del usuario después de animación
       setTimeout(() => {
@@ -56,9 +85,17 @@ export default function AuthenticationScreen({
         onAuthenticated();
       }, 800);
     } else {
+      // Login fallido: incrementar intentos y manejo de cooldown
+      const newFailedAttempts = failedAttempts + 1;
+      setFailedAttempts(newFailedAttempts);
       setError(true);
       setSuccess(false);
       setCodigo('');
+      
+      // Si alcanza el máximo de intentos, activar cooldown
+      if (newFailedAttempts >= MAX_ATTEMPTS) {
+        setCooldownRemaining(COOLDOWN_SECONDS);
+      }
       
       // Quitar error después de animación
       setTimeout(() => setError(false), 500);
@@ -71,6 +108,8 @@ export default function AuthenticationScreen({
     setCodigo('');
     setError(false);
     setSuccess(false);
+    setFailedAttempts(0);
+    setCooldownRemaining(0);
   };
 
   return (
@@ -127,16 +166,24 @@ export default function AuthenticationScreen({
               </p>
             )}
             
-            {error && (
-              <p className="text-red-600 text-sm font-light">Código incorrecto. Intenta de nuevo.</p>
+            {cooldownRemaining > 0 && (
+              <p className="text-red-600 text-sm font-light animate-pulse">
+                Demasiados intentos. Intenta de nuevo en {cooldownRemaining}s
+              </p>
+            )}
+            
+            {error && cooldownRemaining === 0 && (
+              <p className="text-red-600 text-sm font-light">
+                Código incorrecto ({failedAttempts}/{MAX_ATTEMPTS})
+              </p>
             )}
             
             <button
               type="submit"
-              disabled={!usuario.trim() || codigo.length < 6 || !CODIGO_CORRECTO}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors disabled:opacity-50"
+              disabled={!usuario.trim() || codigo.length < 6 || !CODIGO_CORRECTO || cooldownRemaining > 0}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-light py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Entrar
+              {cooldownRemaining > 0 ? `Espera ${cooldownRemaining}s` : 'Entrar'}
             </button>
 
             {usuario && (
