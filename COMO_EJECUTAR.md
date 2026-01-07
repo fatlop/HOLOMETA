@@ -40,6 +40,15 @@ En **producción**, debes configurar las variables en tu plataforma (Vercel/Netl
 
 Si despliegas sin configurar `VITE_ACCESS_CODE`, la app no permitirá el acceso y mostrará un aviso para que lo configures.
 
+### 3.1 Ambientes por modo (recomendado)
+
+Ya incluimos dos archivos:
+
+- `.env.development`: abre el acceso en local (`VITE_PUBLIC_MODE=true`) para pruebas rápidas
+- `.env.production`: exige código en producción (`VITE_PUBLIC_MODE=false`) y deja `VITE_ACCESS_CODE` vacío para obligar a configurarlo en la plataforma
+
+Esto garantiza que el repo sea público, pero el acceso a producción esté protegido por código.
+
 ### 4️⃣ Ejecutar el Proyecto
 
 ```bash
