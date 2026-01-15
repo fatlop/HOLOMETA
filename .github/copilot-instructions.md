@@ -159,7 +159,7 @@ When contributing to HoloMeta, keep in mind:
 - The project focuses on peace, meditation, and collective consciousness
 - Features should enhance user well-being and connection
 - Design should be immersive yet accessible
-- The "Multiverso Cheperiano" is a interconnected universe of experiences
+- The "Multiverso Cheperiano" is an interconnected universe of experiences
 
 ## Related Projects
 
