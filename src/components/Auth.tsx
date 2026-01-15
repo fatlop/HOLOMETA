@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface AuthenticationScreenProps {
@@ -60,7 +61,7 @@ export default function AuthenticationScreen({
     return () => clearInterval(timer);
   }, [cooldownRemaining]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     
     // Si está en cooldown, no permitir intento

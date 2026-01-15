@@ -42,6 +42,7 @@ export default function MomentoDePaz() {
       setIsAuthenticated(true);
       fetchUserData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PUBLIC_MODE]);
 
   // Simular actualización de métricas cada 5 minutos
